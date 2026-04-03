@@ -50,7 +50,7 @@ The system enforces strict Role-Based Access Control (RBAC):
 
 **1. Clone the repository and navigate to the project folder:**
 ```bash
-cd <FINANCE>
+cd <Finance_Tracker_Dashboard>
 
 
 ## Create and activate a virtual environment:
