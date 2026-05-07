@@ -11,9 +11,9 @@ A **production-ready REST API** for personal finance management, built with **Fa
 
 ## 🚀 Live Demo
 
-**API Base URL:** `https://finance-tracker-shams.onrender.com`  
-**Interactive Docs (Swagger UI):** `https://finance-tracker-shams.onrender.com/docs`  
-**ReDoc:** `https://finance-tracker-shams.onrender.com/redoc`
+**API Base URL:** `https://finance-tracker-api-dobn.onrender.com`  
+**Interactive Docs (Swagger UI):** `https://finance-tracker-api-dobn.onrender.com/docs`  
+**ReDoc:** `https://finance-tracker-api-dobn.onrender.com/redoc`
 
 > To test the API, open `/docs` and set the `x-mock-role` header to `Admin`, `Analyst`, or `Viewer`.
 
