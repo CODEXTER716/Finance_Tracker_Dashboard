@@ -1,64 +1,182 @@
-# Finance Dashboard Backend API
+# 💰 Finance Dashboard API
 
-## Objective
-A RESTful backend API built to manage financial records, user roles, permissions, and summary-level analytics for a Finance Dashboard system.
+A **production-ready REST API** for personal finance management, built with **FastAPI**, **PostgreSQL**, and **SQLAlchemy**. Features Role-Based Access Control (RBAC), full CRUD operations, analytics, and live deployment on Render.
 
-## Tech Stack
-* **Framework:** FastAPI (Python)
-* **Database:** SQLite (managed via SQLAlchemy ORM)
-* **Data Validation:** Pydantic
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python)](https://python.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Production-336791?style=flat&logo=postgresql)](https://postgresql.org)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## Assumptions & Tradeoffs
-As per the assignment guidelines, the following reasonable assumptions and tradeoffs were made to focus on core logical structure and clean implementation:
-1. **Mock Authentication:** Instead of a complex JWT token system, Role-Based Access Control (RBAC) is implemented via a simulated HTTP Header (`x-mock-role`). This successfully demonstrates policy checks and guards without the overhead of full session management.
-2. **Database Choice:** SQLite was chosen for data persistence. It provides full relational database features (Foreign Keys, filtering, date querying) while allowing the project to remain highly portable and easy to run locally without installing an external database server like PostgreSQL.
+---
 
-## Features & Access Control Logic
-The system enforces strict Role-Based Access Control (RBAC):
-* **Viewer:** Can read records and dashboard summaries, but cannot create, update, or delete.
-* **Analyst:** (Same as Viewer for this scope) Can read records and access insights.
-* **Admin:** Full management access. Can create users, manage user activation status, and create, update, and delete financial records.
+## 🚀 Live Demo
 
-## Local Setup Instructions
+**API Base URL:** `https://finance-tracker-shams.onrender.com`  
+**Interactive Docs (Swagger UI):** `https://finance-tracker-shams.onrender.com/docs`  
+**ReDoc:** `https://finance-tracker-shams.onrender.com/redoc`
 
-**1. Navigate to the project folder:**
+> To test the API, open `/docs` and set the `x-mock-role` header to `Admin`, `Analyst`, or `Viewer`.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | FastAPI (Python) |
+| Database (Production) | PostgreSQL via Railway |
+| Database (Local Dev) | SQLite (zero setup) |
+| ORM | SQLAlchemy 2.0 |
+| Validation | Pydantic v2 |
+| Deployment | Render (free tier) |
+| Docs | Swagger UI + ReDoc (auto-generated) |
+
+---
+
+## ✨ Features
+
+- ✅ **Full CRUD** — Create, Read, Update, Delete financial records
+- ✅ **Role-Based Access Control (RBAC)** — Admin / Analyst / Viewer roles
+- ✅ **Advanced Filtering** — Filter by type, category, date range
+- ✅ **Pagination** — `skip` and `limit` query params on all list endpoints
+- ✅ **Analytics** — Summary endpoint with income, expenses, net balance, category totals
+- ✅ **Per-user Analytics** — Financial breakdown by individual user
+- ✅ **User Management** — Create users, activate/deactivate accounts
+- ✅ **Auto Docs** — Swagger UI at `/docs`, ReDoc at `/redoc`
+- ✅ **PostgreSQL Ready** — Switches automatically between SQLite (local) and PostgreSQL (production)
+
+---
+
+## 🔐 Role-Based Access Control
+
+| Endpoint | Viewer | Analyst | Admin |
+
+| GET /records/ | ✅ | ✅ | ✅ |
+| GET /summary/ | ✅ | ✅ | ✅ |
+| POST /records/ | ❌ | ✅ | ✅ |
+| PUT /records/{id} | ❌ | ❌ | ✅ |
+| DELETE /records/{id} | ❌ | ❌ | ✅ |
+| GET /users/ | ❌ | ✅ | ✅ |
+| PUT /users/{id}/status | ❌ | ❌ | ✅ |
+
+> Set the role via the `x-mock-role` HTTP header on each request.
+
+---
+
+## API Endpoints
+
+### Health
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/` | Root — confirms API is running |
+| GET | `/health` | Health check with timestamp |
+
+### Users
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/users/` | Create new user |
+| GET | `/users/` | List all users (Admin/Analyst) |
+| GET | `/users/{id}` | Get user by ID |
+| PUT | `/users/{id}/status` | Activate/deactivate user (Admin) |
+
+### Records
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/records/` | Create record (Admin/Analyst) |
+| GET | `/records/` | List records with filters + pagination |
+| GET | `/records/{id}` | Get single record |
+| PUT | `/records/{id}` | Update record (Admin) |
+| DELETE | `/records/{id}` | Delete record (Admin) |
+
+### Analytics
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/summary/` | Global income/expense/balance summary |
+| GET | `/summary/by-user/{id}` | Per-user financial summary |
+
+---
+
+## ⚙️ Local Setup (5 minutes)
+
+### 1. Clone the repo
 ```bash
-cd finance
+git clone https://github.com/CODEXTER716/Finance_Tracker_Dashboard.git
+cd Finance_Tracker_Dashboard
+```
 
-## Create and activate a virtual environment:
+### 2. Create virtual environment
+```bash
 python -m venv venv
 
-# On Windows:
+# Windows:
 venv\Scripts\activate
 
-## Install dependencies:
+# Mac/Linux:
+source venv/bin/activate
+```
 
-pip install fastapi uvicorn sqlalchemy pydantic
+### 3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
 
-## Run the server:
+### 4. Set up environment (optional for local)
+```bash
+# Copy the example env file
+cp .env.example .env
+# For local dev, SQLite is used automatically — no changes needed
+```
 
+### 5. Run the server
+```bash
 uvicorn main:app --reload
+```
 
-View API Documentation:
-Open your browser and navigate to: http://127.0.0.1:8000/docs to view the interactive Swagger UI and test the endpoints.
+### 6. Open docs
+Visit: **http://127.0.0.1:8000/docs**
 
-Core API Endpoints
-User Management
+---
 
-POST /users/ - Create a new user (Assigns roles).
+## ☁️ Deployment (Render + Railway)
 
-PUT /users/{id}/status - Activate or deactivate a user account (Admins only).
+### Database — Railway (Free PostgreSQL)
+1. Sign up at [railway.app](https://railway.app)
+2. New Project → Add PostgreSQL
+3. Copy the `DATABASE_URL` from the PostgreSQL service
 
-Financial Records
+### API Server — Render (Free)
+1. Sign up at [render.com](https://render.com)
+2. New → Web Service → Connect your GitHub repo
+3. Set:
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
+4. Add environment variable: `DATABASE_URL` = your Railway URL
+5. Deploy → get your live URL!
 
-POST /records/ - Create a new financial record (Admins only).
+---
 
-GET /records/ - Fetch records. Supports advanced filtering (record_type, category, start_date, end_date) and pagination (skip, limit).
+## 📁 Project Structure
 
-PUT /records/{id} - Update a record (Admins only).
+```
+finance-tracker/
+├── main.py              # FastAPI app — all routes, models, schemas
+├── requirements.txt     # Python dependencies
+├── Procfile             # Render deployment config
+├── .env.example         # Environment variable template
+├── .gitignore           # Excludes .env, DB files, cache
+└── README.md            # This file
+```
 
-DELETE /records/{id} - Delete a record (Admins only).
+---
 
-Analytics
+## 👨‍💻 Author
 
-GET /summary/ - Returns calculated total income, total expenses, net balance, and category-wise totals.
+**Shams Tabrej Alam**  
+B.Tech Information Technology @ Dr. B.C. Roy Engineering College  
+[GitHub](https://github.com/CODEXTER716) · [LinkedIn](https://linkedin.com/in/shams-tabrej-889b57291)
+
+---
+
+## 📄 License
+
+MIT License — free to use, modify and share.
